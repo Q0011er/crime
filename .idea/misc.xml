@@ -4,8 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/JavaPRJonAndroid/Criminalintent/app/src/main/res/layout/activity_crime.xml" value="0.2672239108409321" />
+        <entry key="..\:/JavaPRJonAndroid/Criminalintent/app/src/main/res/layout/activity_fragment.xml" value="0.4432291666666667" />
         <entry key="..\:/JavaPRJonAndroid/Criminalintent/app/src/main/res/layout/activity_main.xml" value="0.5401041666666667" />
         <entry key="..\:/JavaPRJonAndroid/Criminalintent/app/src/main/res/layout/fragment_crime.xml" value="0.84375" />
+        <entry key="..\:/JavaPRJonAndroid/Criminalintent/app/src/main/res/layout/fragment_crime_list.xml" value="0.31354166666666666" />
+        <entry key="..\:/JavaPRJonAndroid/Criminalintent/app/src/main/res/layout/list_item_crime.xml" value="0.33" />
       </map>
     </option>
   </component>
