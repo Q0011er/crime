@@ -18,7 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CrimeActivity" />
+
+<!-- задаем родительскую активность к которой надо возращаться по нажатию кнопки UP -->
+<!-- кнопка UP появляется автоматически в итем меню фрагментов активности CrimePagerActivity-->
+        <activity
+            android:name=".CrimePagerActivity"
+            android:parentActivityName=".CrimeListActivity">
+        </activity>
     </application>
 
 </manifest>

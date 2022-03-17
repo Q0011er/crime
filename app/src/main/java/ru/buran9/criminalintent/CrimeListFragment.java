@@ -1,7 +1,11 @@
 package ru.buran9.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +25,14 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView crimeRecycleView;
     private CrimeAdapter crimeAdapter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //сообщаем FragmentManager что экземпляр CrimeListFragment должен получить
+        //обратный вызов меню (отобразить меню) определнного в onCreateOptionsMenu()
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,10 +46,13 @@ public class CrimeListFragment extends Fragment {
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
-        crimeAdapter = new CrimeAdapter(crimes);
-        crimeRecycleView.setAdapter(crimeAdapter);
+        if (crimeAdapter == null) {
+            crimeAdapter = new CrimeAdapter(crimes);
+            crimeRecycleView.setAdapter(crimeAdapter);
+        } else {
+            crimeAdapter.notifyDataSetChanged();
+        }
     }
-
 
     // внутренний класс - наследник ViewHolder для хранения представления list_item_crime
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -55,7 +70,6 @@ public class CrimeListFragment extends Fragment {
             crimeDateTextView = (TextView) itemView.findViewById(R.id.textview_recycler_crimedate);
             crimeSolvedImageView = (ImageView) itemView.findViewById(R.id.crime_solved_img);
             itemView.setOnClickListener(this);
-
         }
 
         // метод для связывания виджетов View с конкретным объектом Crime
@@ -68,9 +82,11 @@ public class CrimeListFragment extends Fragment {
             crimeSolvedImageView.setVisibility(oneCrime.isCrimeSolved() ? View.VISIBLE : View.GONE);
         }
 
+        //вызываем CrimePagerActivity по клику по вью из RecyclerView
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(), oneCrime.getCrimeTitle()+" click!", Toast.LENGTH_SHORT).show();
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), oneCrime.getCrimeID());
+            startActivity(intent);
         }
     }
 
@@ -105,5 +121,36 @@ public class CrimeListFragment extends Fragment {
     }
 
 
+
+    // определяем меню для фрагмента, вызвается методом setHasOptionsMenu(boolean) и обрабатывается
+    // FragmentManager'ом
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime_list, menu);
+    }
+
+    // метод для обработки нажатия по пункту меню
+    // после обработки команды возвращаем true - сообщаем, что дальнейшая обработка не требуется
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_crime:
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getCrimeID());
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
 
 }
